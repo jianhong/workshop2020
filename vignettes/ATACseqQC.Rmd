@@ -14,13 +14,14 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Prepare for inputs
 
 ```{r eval=FALSE}
-library(devtools)
-install_github("jianhong/workshop2020")
+library(BiocManager)
+install("jianhong/workshop2020")
 ```
 ```{r extfilepath}
-## input the sample bamFile from the http://rbioconductor.com/
+## input the sample bamFile from the installed packaged
 ## the data is pre-processed chr1 data of GSM1155959
-extfilePath <- system.file("extdata", package="workshop2020", mustWork = TRUE)
+extfilePath <- system.file("extdata", "ATACseqQC", 
+                           package="workshop2020", mustWork = TRUE)
 dir(extfilePath)
 ```
 
