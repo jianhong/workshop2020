@@ -53,7 +53,7 @@ nucleosome occupacy (present in integer multiples).
 ## by your bam file name
 bamfile <- file.path(extfilePath, "GL3.chr1.rmdup.bam")
 (bamfile.labels <- gsub(".rmdup.bam", "", basename(bamfile)))
-## generate fragement size distribution
+## generate fragment size distribution
 fragSize <- fragSizeDist(bamfile, bamfile.labels)
 ```
 
