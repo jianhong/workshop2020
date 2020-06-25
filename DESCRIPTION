@@ -17,9 +17,8 @@ Description: With breakthroughs in Next Generation Sequencing (NGS),
     in sequencing data analysis, understanding the results and presenting the 
     data by themselves. 
 Depends:
-    R (>= 4.0)
+    R (>= 3.6)
 Imports:
-    ribosomeProfilingQC,
     ATACseqQC,
     ChIPpeakAnno,
     motifStack,
@@ -33,5 +32,6 @@ Imports:
 License: MIT + file LICENSE
 LazyData: TRUE
 VignetteBuilder: knitr
-RoxygenNote: 6.0.1
+RoxygenNote: 7.1.0
+Encoding: UTF-8
 biocViews: Sequencing, GeneRegulation, QualityControl
