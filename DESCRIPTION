@@ -28,6 +28,16 @@ Imports:
     trackViewer,
     BSgenome.Hsapiens.UCSC.hg38,
     TxDb.Hsapiens.UCSC.hg38.knownGene,
+    TxDb.Hsapiens.UCSC.hg19.knownGene,
+    BSgenome.Hsapiens.UCSC.hg19,
+    EnsDb.Hsapiens.v75,
+    AnnotationHub,
+    UpSetR,
+    WriteXLS,
+    biomaRt,
+    reactome.db,
+    rtracklayer,
+    seqinr,
     MotifDb
 License: MIT + file LICENSE
 LazyData: TRUE
