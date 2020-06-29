@@ -203,7 +203,7 @@ Now we annotate the peaks by UCSC hg19 annotations.
 if(!identical(seqlevelsStyle(peaks), seqlevelsStyle(annoDataTxDb))){
   seqlevelsStyle(peaks) <- seqlevelsStyle(annoDataTxDb)[1]
 }
-## do annotation by nearest TSS of Ensembl GRCh37.p13
+## do annotation by nearest TSS of UCSC hg19 annotations
 annoTxDb <- annotatePeakInBatch(peaks, AnnotationData=annoDataTxDb)
 head(annoTxDb, n=2)
 # A pie chart can be used to demonstrate the overlap features of the peaks.
@@ -216,7 +216,7 @@ Now we try to use gencode v32 annotations to annotate the peaks.
 if(!identical(seqlevelsStyle(peaks), seqlevelsStyle(annoDataGencode))){
   seqlevelsStyle(peaks) <- seqlevelsStyle(annoDataGencode)[1]
 }
-## do annotation by nearest TSS of Ensembl GRCh37.p13
+## do annotation by nearest TSS of Gencode
 annoGencode <- annotatePeakInBatch(peaks, AnnotationData=annoDataGencode)
 head(annoGencode, n=2)
 # A pie chart can be used to demonstrate the overlap features of the peaks.
@@ -259,7 +259,7 @@ head(annoEnsDb, n=2)
 annoTxDb <- addGeneIDs(annoTxDb, orgAnn="org.Hs.eg.db", 
                         feature_id_type="entrez_id",
                         IDs2Add=c("symbol"))
-head(annoEnsDb, n=2)
+head(annoTxDb, n=2)
 annoGencode$entrez_id <- xget(sub("(ENSG\\d{11}).*$", "\\1", 
                                   as.character(annoGencode$feature)), 
                               org.Hs.egENSEMBL2EG, 
