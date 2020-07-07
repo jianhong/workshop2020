@@ -1,7 +1,7 @@
 Package: workshop2020
 Type: Package
 Title: Basic and advanced bioinformatics for RegenerationNEXT
-Version: 0.0.2
+Version: 0.0.3
 Author: Jianhong Ou
 Maintainer: Jianhong Ou <jianhong.ou@duke.com>
 Description: With breakthroughs in Next Generation Sequencing (NGS), 
@@ -19,26 +19,35 @@ Description: With breakthroughs in Next Generation Sequencing (NGS),
 Depends:
     R (>= 3.6)
 Imports:
-    ATACseqQC,
-    ChIPpeakAnno,
-    motifStack,
-    Rsamtools,
-    org.Hs.eg.db,
-    knitr,
-    trackViewer,
-    BSgenome.Hsapiens.UCSC.hg38,
-    TxDb.Hsapiens.UCSC.hg38.knownGene,
-    TxDb.Hsapiens.UCSC.hg19.knownGene,
-    BSgenome.Hsapiens.UCSC.hg19,
-    EnsDb.Hsapiens.v75,
+    ade4,
     AnnotationHub,
-    UpSetR,
-    WriteXLS,
+    ATACseqQC,
     biomaRt,
+    BiocManager,
+    Biostrings,
+    bookdown,
+    BSgenome.Hsapiens.UCSC.hg19,
+    BSgenome.Hsapiens.UCSC.hg38,
+    ChIPpeakAnno,
+    colorBlindness,
+    dagLogo,
+    EnsDb.Hsapiens.v75,
+    ggplot2,
+    kableExtra,
+    knitr,
+    motifStack,
+    MotifDb,
+    org.Hs.eg.db,
+    RColorBrewer,
     reactome.db,
+    Rsamtools,
     rtracklayer,
     seqinr,
-    MotifDb
+    trackViewer,
+    TxDb.Hsapiens.UCSC.hg19.knownGene,
+    TxDb.Hsapiens.UCSC.hg38.knownGene,
+    UpSetR,
+    WriteXLS
 License: MIT + file LICENSE
 LazyData: TRUE
 VignetteBuilder: knitr

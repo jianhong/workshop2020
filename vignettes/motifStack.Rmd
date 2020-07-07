@@ -1,0 +1,561 @@
+---
+title: "motifStack_workshop2020"
+bibliography: ref.bib
+csl: nature.csl
+vignette: >
+  %\VignetteIndexEntry{motifStack_workshop2020}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+output: 
+  bookdown::html_document2:
+    css: custom.css
+---
+
+```{r checkplatform, include=FALSE}
+library(knitr)
+suppressPackageStartupMessages({
+  library(motifStack)
+  library(Biostrings)
+  library(MotifDb)
+  library(ggplot2)
+  library(RColorBrewer)
+  library(kableExtra)
+  library(dagLogo)
+  library(colorBlindness)
+})
+opts_chunk$set(eval=TRUE, fig.width=6, fig.height=2, 
+               warning = FALSE, message = FALSE)
+```
+
+## Introduction
+
+A sequence motif is a short sequence conserved in multiple amino acid or nucleic acid sequences
+with biological significance such as DNA binding sites, where transcription factors (TFs) bind and catalytic sites in enzymes.
+Motifs are often represented as position count matrix (PCM)(Table \@ref(tab:motifStackPCM)), position frequency matrix (PFM)(Table \@ref(tab:motifStackPFM))
+or position weight matrix (PWM) (reviewed in [@das2007survey;@sandve2007improved;@tompa2005assessing]). 
+Sequence logos, based on information theory or probability theory, 
+have been used as a graphical representation of sequence motifs to depict the frequencies 
+of bases or amino acids at each conserved position[@schneider1990sequence;@schneider1996reading;@schneider2001strong;@crooks2004weblogo;@workman2005enologos].
+
+```{r motifStackPCM, echo=FALSE}
+pcm <- c(1, 1, 23, 22, 1, 2, 19, 16, 0, 0, 2, 4,
+         2, 4, 0, 1, 19, 15, 1, 2, 0, 0, 1, 2)
+pcm <- matrix(pcm, nrow = 4, byrow = TRUE)
+row.names(pcm) <- c("A", "C", "G", "T")
+kable(pcm, caption = "Sample of PCM. Each row represents the counts of A, C, G and T, while each column is the counts for that nucleotide position.") %>% kable_styling()
+```
+
+
+```{r motifStackPFM, echo=FALSE}
+pfm <- t(t(pcm)/colSums(pcm))
+kable(pfm, digits=2,
+      caption = "Sample of PFM. Each row represents the frequency of A, C, G and T, while each column is the frequency for that nucleotide position.") %>% kable_styling()
+```
+
+
+High-throughput experimental approaches have been developed to identify binding sequences for a large number of TFs in several organisms. 
+The experimental methods include protein binding microarray (PBM)[@newburger2008uniprobe], bacterial one-hybrid (B1H)[@meng2005bacterial], systematic evolution of ligands by exponential enrichment (SELEX)[@ellington1990vitro;@tuerk1990systematic], High-Throughput (HT) SELEX[@hoinka2015large], and selective microfluidics-based ligand enrichment followed by sequencing (SMiLE-seq)[@isakova2017smile]. 
+Several algorithms have been developed to discover motifs from the binding sequences, identified by the above experimental methods. For example, MEME Suite[@bailey2009meme] has been widely used to construct motifs for B1H and SELEX data, while Seed-and-Wobble (SW)[@badis2009diversity], Dream5[@weirauch2013evaluation], and BEEML[@zhao2011quantitative] have been used to generate motifs for PBM data.
+
+Visualization tools have been developed for representing a sequence motif as individual sequence logo, such as weblogo[@crooks2004weblogo]and seqlogo[@bembom1seqlogo]. To facilitate the comparison of multiple motifs, several motif alignment and clustering tools 
+have been developed such as Tomtom[@gupta2007quantifying], MatAlign[@zhao2012conserved], and STAMP[@mahony2007stamp]. However, these tools are lacking flexibility in dispalying the similarities or differences among motifs.
+
+The _motifStack_ package[@ou2018motifstack] is designed for for the graphic representation of multiple motifs with their similarities or distances depicted. It provides the flexibility for users to customize the clustering and graphic parameters such as distance cutoff, the font family, colors, symbols, layout styles, and ways to highlight different regions or branches.
+
+In this workshop, we will demonstrate the features and flexibility of _motifStack_ for visualizing the alignment of multiple motifs in various styles. In addition, we will illustrate the utility of _motifStack_ for providing insights into families of related motifs using several large collections of homeodomain (HD) DNA binding motifs from human, mouse and fly. Furthermore, we will show how _motifStack_ facilitated the discovery that changing the computational method used to build motifs from the same binding data can lead to artificial segregation of motifs for identical TFs using  the same motif alignment method.
+
+## Installation
+
+_BiocManager_ is used to install the released version of _motifStack_.
+
+```{r eval=FALSE}
+library(BiocManager)
+install("motifStack")
+```
+
+To install the development version of _motifStack_, please try
+
+```{r eval=FALSE}
+library(BiocManager)
+install("jianhong/motifStack")
+```
+
+```{r}
+packageVersion("motifStack")
+```
+
+Please note that starting from version 1.28.0, _motifStack_ requires cario (>=1.6) instead of ghostscript which is for a lower version of _motifStack_. The `capabilities` function could be used to check capablilities of cario for current R session. If _motifStack_ version number is smaller than 1.28.0, the full path to the executable ghostscript must be available for R session. 
+Starting from version 1.33.2, _motifStack_ does not require cario or ghostscript
+any more. It will use cario if cario (>=1.6) is installed or use ghostscript if
+`gs` command is available. Otherwise, _motifStack_ will use embed font to plot
+the sequence logo.
+
+In this tutorial, we will illustrate the functionalities of _motifStack_ 
+available in version >=1.33.3.
+
+```{r}
+if(packageVersion("motifStack")<"1.33.3"){
+  BiocManager::install("jianhong/motifStack", upgrade="never", 
+                       build_vignettes=TRUE, force = TRUE)
+}
+```
+
+
+## Inputs of _motifStack_
+
+The inputs of _motifStack_ are one or more motifs represented as PCM or PFM. 
+Motifs in PFM format are available in
+most of the motif databases such as TRANSFAC[@wingender2000transfac],
+JASPAR[@sandelin2004jaspar], CIS-BP[@weirauch2014determination] and
+HOCOMOCO[@kulakovskiy2017hocomoco]. 
+More databases could be found at http://meme-suite.org/db/motifs.
+
+In addition, `MotifDb` package contains a collection of DNA-binding sequence 
+motifs in PFM format. 9933 PFMs were collected from 11 sources:
+cisbp_1.02[@weirauch2014determination], 
+FlyFactorSurvey[@zhu2010flyfactorsurvey], 
+HOCOMOCO[@kulakovskiy2017hocomoco], 
+HOMER[@heinz2010simple], hPDI[@xie2009hpdi], JASPAR[@sandelin2004jaspar],
+Jolma2013[@jolma2013dna], ScerTF[@spivak2011scertf], 
+stamlab[@neph2012circuitry], SwissRegulon[@pachkov2006swissregulon] and
+UniPROBE[@newburger2008uniprobe].
+
+```{r}
+library(MotifDb)
+(pfm <- MotifDb::query(MotifDb, c("hsapiens", "CTCF")))
+pfm[["Hsapiens-jolma2013-CTCF"]]
+```
+
+The `plotMotifLogo` function can be used to plot sequence logo for motifs in PFM format (Figure \@ref(fig:motifStackplotMotifLogo)). 
+As default, the nucleotides in a sequence logo will be drawn proportional to their information content (IC)[@workman2005enologos].
+```{r motifStackplotMotifLogo, fig.cap="Plot sequence logo for motif in PFM format."}
+library(motifStack)
+plotMotifLogo(pfm[["Hsapiens-jolma2013-CTCF"]])
+```
+
+A PFM can be formated as an `pfm` object which is the preferred format for
+_motifStack_ (Figure \@ref(fig:motifStackplotMotifPFM)).
+
+```{r motifStackplotMotifPFM, fig.cap="Plot sequence logo for a `pfm` object."}
+matrix.bin <- MotifDb::query(MotifDb, "bin_SANGER")
+motif <- new("pfm", mat=matrix.bin[[1]], name=names(matrix.bin)[1])
+motifStack(motif)
+```
+
+Similary, a PCM can be converted to a `pcm` object easily  (Figure \@ref(fig:motifStackplotMotifPCM)).
+
+```{r motifStackplotMotifPCM, fig.cap="Plot sequence logo for a `pcm` object."}
+path <- system.file("extdata", package = "motifStack")
+(pcm <- read.table(file.path(path, "bin_SOLEXA.pcm")))
+pcm <- pcm[,3:ncol(pcm)]
+rownames(pcm) <- c("A","C","G","T") # must have rownames
+motif <- new("pcm", mat=as.matrix(pcm), name="bin_SOLEXA")
+plot(motif)
+```
+
+In addition, `importMatrix` function can be used to import the motifs into a
+`pcm` or `pfm` object from files exported by TRANSFAC[@wingender2000transfac],
+JASPAR[@sandelin2004jaspar] or CIS-BP[@weirauch2014determination].
+
+```{r motifStackimportMatrix,fig.height=8,fig.cap="Plot sequence logo for data imported by `importMatrix`"}
+motifs <- importMatrix(dir(path, "*.pcm", full.names = TRUE),
+                       format = "pcm", to = "pcm")
+motifStack(motifs)
+```
+
+
+## Plot single sequence logo
+
+_motifStack_ can be used to plot DNA/RNA sequence logo, affinity logo and 
+amino acid sequence log. 
+It provides the flexibility for users to customize the graphic parameters 
+such as the font family, symbol colors and markers. 
+Different from most of the sequence logo plotting tools, _motifStack_ does not
+need to pre-define the path for plotting. 
+It depends on grImport/2[@murrell2009importing] package to import fonts into a 
+path, which provides the power of _motifStack_ more flexibility.
+
+## Plot a DNA/RNA/amino acid sequence logo
+
+To plot an RNA sequence logo, simply change the rowname of the matrix from 
+"T" to "U" (Figure \@ref(fig:motifStackplotRNAmotif)).
+
+```{r motifStackplotRNAmotif, fig.cap="Plot an RNA sequence logo."}
+rna <- pcm
+rownames(rna)[4] <- "U"
+RNA_motif <- new("pcm", mat=as.matrix(rna), name="RNA_motif")
+plot(RNA_motif)
+```
+
+If the PFM of amino acid sequence motif is provided, _motifStack_ can be used 
+to draw amino acid sequence logo (Figure \@ref(fig:motifStackplotAAmotif)).
+
+```{r motifStackplotAAmotif, height=4, fig.cap="Plot amino acid sequence logo."}
+library(Biostrings)
+protein<-read.table(system.file("extdata", "motifStack", "irg.txt",
+                                package = "workshop2020"))
+protein<-t(protein[,2:21])
+rownames(protein) <- sort(AA_STANDARD)
+protein_motif<-new("pcm", mat=protein, name="IRG", 
+                   color=colorset(alphabet="AA",colorScheme="chemistry"),
+                   alphabet = "AA",
+                   markers=list(new("marker", type="rect", 
+                                    start=c(1,27), stop=c(13,49),
+                                    gp=gpar(col="#009E73", fill=NA, lty=2))))
+plot(protein_motif)
+```
+
+_motifStack_ can also be used to plot other types of logos (Figure \@ref(fig:motifStackplotANYlogo)).
+
+```{r motifStackplotANYlogo, fig.cap="Plot a user-defined logo."}
+m <- matrix(0, nrow = 10, ncol = 10, 
+            dimnames = list(strsplit("motifStack", "")[[1]],
+                            strsplit("motifStack", "")[[1]]))
+for(i in seq.int(10)) m[i, i] <- 1
+ms <- new("pfm", mat=m, name="motifStack")
+plot(ms)
+```
+
+The sequence logo can be visulized with different fonts and colors (Figure \@ref(fig:motifStackchangeFont)).
+
+```{r motifStackchangeFont, fig.cap="Plot sequence logo with different fonts and colors."}
+motif$color <- colorset(colorScheme = 'blindnessSafe')
+plot(motif, font="mono,Courier", fontface="plain")
+```
+
+
+### Plot sequence logo with specified regions highlighted using the markers slot
+
+The `markers` slot of a `pfm` or `pcm` object can be assigned by a list of `marker` objects. 
+There are three type of markers, "rect", "line" and "text". 
+If `markers` slot is assigned, markers can be plotted (Figure \@ref(fig:motifStackwithMarkers)).
+
+```{r motifStackwithMarkers, fig.cap="Plot a sequence logo with selected regions highlighted."}
+markerRect <- new("marker", type="rect", start=6, stop=7, 
+                  gp=gpar(lty=2, fill=NA, col="orange", lwd=3))
+markerRect2 <- new("marker", type="rect", start=2, 
+                   gp=gpar(lty=3, fill=NA, col="green", lwd=2))
+markerLine <- new("marker", type="line", start=2, stop=7,
+                  gp=gpar(lwd=2, col="darkblue"))
+markerText <- new("marker", type="text", start=c(1, 5), 
+                  label=c("*", "core"), gp=gpar(cex=2, col="red"))
+motif <- new("pcm", mat=as.matrix(pcm), name="bin_SOLEXA", 
+             markers=c(markerRect, markerLine, markerText, markerRect2))
+plot(motif)
+```
+
+
+## Plot motifs with ggplot2
+
+Sequence logo can also be plotted by `geom_motif` function which is compatible with _ggplot2_[@wickham2016ggplot2] (Figure \@ref(fig:motifStackggplot2)).
+
+```{r motifStackggplot2,fig.height=8,fig.cap="Plot sequence logo with ggplot2."}
+len <- length(motifs)
+motifs[[1]]$markers <- list(markerRect2, markerRect)
+df <- data.frame(x=.5, y=(seq.int(len)-.5)/len, 
+                 width=.75, height=1/(len+1))
+df$motif <- motifs
+library(ggplot2)
+ggplot(df, aes(x=x, y=y, width=width, height=height, motif=motif)) +
+  geom_motif(use.xy = TRUE) + theme_bw() + xlim(0, 1) + ylim(0, 1)
+```
+
+
+## Plot multiple sequence logos
+
+_motifStack_ is designed to visulize the alignment of multiple motifs and facilitate the analysis
+of binding site diversity/conservation within families of TFs and evolution of binding sites among
+different species. There are many functions in _motifStack_ such as `plotMotifLogoStack`, `motifCloud`,
+`plotMotifStackWithRadialPhylog`, `motifPiles`, and `motifCircos` for plotting motifs in different layouts,
+`motifSignature` for generating motif signatures by merging similar motifs. 
+To make it easy to use, we created one workflow function called `motifStack`, 
+which can be used to draw a single DNA, RNA or amino acid motif as a sequence logo,
+as well as to align motifs, generate motif signatures and plot aligned motifs as a stack,
+phylogeny tree, radial tree or cloud of sequence logos.
+
+To align motifs, `DNAmotifAlignment` function implements Ungapped	Smith–Waterman	(local)	alignment 
+based on column comparison scores calculated by Kullback-Leibler distance[@roepcke2005t]. 
+`DNAmotifAlignment` requires the inputs be sorted by the distance of motifs. 
+To get the sorted motifs for alignment, distances can be calculated using motifDistance in `motIV` 
+(R implementation of STAMP[@mahony2007stamp]). 
+Distances generated from MatAlign[@zhao2012conserved] are also supported with a helper function `ade4::newick2phylog`[@dray2007ade4]. 
+
+### Plot sequence logo stack
+
+As shown in above, `motifStack` function can be used to plot motifs as a stack of sequence logos easily.
+By setting the layout to "tree" (Figure \@ref(fig:motifStacktreeLayout)) or "phylog" (Figure \@ref(fig:motifStackphylogLayout)), 
+`motifStack` will plot the stack of sequence logos with a linear tree.
+
+```{r motifStacktreeLayout, fig.height=6, fig.cap="Plot sequence logo stack with tree layout."}
+motifStack(motifs, layout = "tree")
+```
+```{r motifStackphylogLayout, fig.height=6, fig.cap="Plot sequence logo stack with phylog layout."}
+motifStack(motifs, layout="phylog", f.phylog=.15, f.logo=0.25)
+```
+
+Even though the layout of "phylog" allows more motifs to be plotted comparing to the layout of "tree",
+both layouts only allow small sets of motifs to be readily compared. 
+However, moderate throughput analysis of TFs has generated 100s to 1000s of motifs, 
+which make the visualization of their relationships more challenging. 
+To reduce the total number of motifs depicted, clusters of highly similar motifs can be merged 
+with the `motifSignature` function using a distance threshold. 
+The distance threshold is user-determined; a low threshold will merge only extremely similar motifs
+while a higher threshold can group motifs with lower similarity. 
+
+```{r}
+library(MotifDb)
+matrix.fly <- MotifDb::query(MotifDb, "FlyFactorSurvey")
+motifs2 <- as.list(matrix.fly)
+## format the name
+names(motifs2) <- gsub("(_[\\.0-9]+)*_FBgn\\d+$", "", 
+                       elementMetadata(matrix.fly)$providerName)
+names(motifs2) <- gsub("[^a-zA-Z0-9]", "_", names(motifs2))
+
+motifs2 <- motifs2[unique(names(motifs2))]
+## subsample motifs
+set.seed(1)
+pfms <- sample(motifs2, 50)
+## cluster the motifs
+hc <- clusterMotifs(pfms)
+## convert the hclust to phylog object
+library(ade4)
+phylog <- hclust2phylog(hc)
+## reorder the pfms by the order of hclust
+leaves <- names(phylog$leaves)
+pfms <- pfms[leaves]
+## create a list of pfm objects
+pfms <- mapply(pfms, names(pfms), 
+               FUN=function(.pfm, .name){
+                 new("pfm",mat=.pfm, name=.name)})
+## extract the motif signatures
+motifSig <- motifSignature(pfms, phylog, cutoffPval = 0.0001, min.freq=1)
+```
+
+Logos for these merged motifs can be plotted on the same dendrograms, 
+using the relative size of the logos to reflect the number of TFs that contribute to the merged motif.
+Compared with the original dendrogram, the number of TFs with similar motifs and 
+the relationships between the merged motifs can be more easily compared.
+The 50 motifs shown in the original image are now shown as only 28 motif clusters/signatures, 
+with the members of each cluster clearly indicated. 
+By setting the colors of dendrogram via parameter col.tree,
+the colors of lable of leaves via parameter col.leaves,
+and the colors of annotation bar via parameter col.anno, 
+`motifPiles` function can mark each motif with multiple annotation colors (Figure \@ref(fig:motifStackmotifPiles)).
+
+```{r motifStackmotifPiles,fig.height=8, fig.cap="Plot sequence logo stack by motifPiles."}
+## get the signatures from object of motifSignature
+sig <- signatures(motifSig)
+## get the group color for each signature
+gpCol <- sigColor(motifSig)
+
+library(RColorBrewer)
+color <- brewer.pal(12, "Set3")
+## plot the logo stack with pile style.
+motifPiles(phylog=phylog, pfms=pfms, pfms2=sig, 
+            col.tree=rep(color, each=5),
+            col.leaves=rep(rev(color), each=5),
+            col.pfms2=gpCol, 
+            r.anno=c(0.02, 0.03, 0.04), 
+            col.anno=list(sample(colors(), 50), 
+                          sample(colors(), 50), 
+                          sample(colors(), 50)),
+            motifScale="logarithmic",
+            plotIndex=TRUE)
+```
+
+
+### Plot sequence logo cloud
+
+To emphasize the weight of motif signatures, motif signatures can be plotted as a circular (Figure \@ref(fig:motifStackmotifCloud)) or rectanglular 
+word clouds with motif size representing the number of motifs that contributed to the signature. 
+The larger the motif size, the larger the number of motifs within that motif signature.
+
+```{r motifStackmotifCloud,fig.height=6, fig.cap="Plot sequence logo cloud."}
+## draw the motifs with a word-cloud style.
+motifCloud(motifSig, scale=c(6, .5), layout="cloud")
+```
+
+### Plot sequence logo circos
+
+The sequence logo cloud will loose the cluster information. 
+Plotting motifs as sequence logo circos is a good solution to visualize motif signatures with dendrogram (Figure \@ref(fig:motifStackplotMotifStackWithRadialPhylog)).
+
+```{r motifStackplotMotifStackWithRadialPhylog,fig.height=6, fig.cap="Plot sequence logo circos."}
+## plot the logo stack with radial style.
+plotMotifStackWithRadialPhylog(phylog=phylog, pfms=sig, 
+                              circle=0.4, cleaves = 0.3, 
+                              clabel.leaves = 0.5, 
+                              col.bg=rep(color, each=5), col.bg.alpha=0.3, 
+                              col.leaves=rep(rev(color), each=5),
+                              col.inner.label.circle=gpCol, 
+                              inner.label.circle.width=0.03,
+                              angle=350, circle.motif=1.2, 
+                              motifScale="logarithmic")
+```
+
+`motifCircos` function provide the possibility to plot the motif signatures with their original sequence logos
+in the circos style (Figure \@ref(fig:motifStackmotifCircos)).
+
+```{r motifStackmotifCircos,fig.height=6, fig.cap="Plot sequence logo circos by motifCiros."}
+## plot the logo stack with cirsoc style.
+motifCircos(phylog=phylog, pfms=pfms, pfms2=sig, 
+            col.tree.bg=rep(color, each=5), col.tree.bg.alpha=0.3, 
+            col.leaves=rep(rev(color), each=5),
+            col.inner.label.circle=gpCol, 
+            inner.label.circle.width=0.03,
+            col.outer.label.circle=gpCol, 
+            outer.label.circle.width=0.03,
+            r.rings=c(0.02, 0.03, 0.04), 
+            col.rings=list(sample(colors(), 50), 
+                           sample(colors(), 50), 
+                           sample(colors(), 50)),
+            angle=350, motifScale="logarithmic")
+```
+## Plot motifs with d3.js in a webpage
+
+Interactive plot can be generated using browseMotifs function which leverages the d3.js library. All motifs on the plot are draggable and the plot can be easily exported as a Scalable Vector Graphics (SVG) file.
+
+```{r browseMotifs, fig.width=12, fig.height=12, fig.cap="Plot motifs interactively."}
+browseMotifs(pfms = pfms, phylog = phylog, layout="radialPhylog", 
+             yaxis = FALSE, xaxis = FALSE, baseWidth=6, baseHeight = 15)
+```
+
+
+## Plot fly data from different experimental methods
+
+Following scripts will show how _motifStack_ facilitated the discovery that changing the experiemntal method used to build motifs from the same binding data can lead to artificial segregation of motifs for identical TFs within a motif alignment. 
+MatAlign[@zhao2012conserved] was implemented in _motifStack_ by following the code from http://stormo.wustl.edu/MatAlign/ 
+to get the phylogenetic tree for given motifs. 
+Compare to STAMP, MatAlign alignment method is superior for discriminating between the closely related motifs[@ou2018motifstack]. 
+
+Here we clustered motifs for a smaller set of fly HDs that were determined using four different experimental methods to measure DNA binding specificity, B1H, HT-SELEX, SMiLE-seq and PBM, to confirm that the motif generation method can impact clustering. As it shown in Figre \@ref(fig:motifStackFlydata) B1H motifs from different lab tend to cluster with each other (motifs 17-26, 29,30, 36-45, 50-53, 60-68, 72-100, 102-143, 159-169, 172-180, 184, 185, 187, 188, 196, 197, 202-210, 238, 239) compared to PBM data (motifs 'eve' in blue). PMB data (motif 227-230, 240-247) tend to have lower IC, which may be introduced by computation methods[@ou2018motifstack]. HT-SELEX tend to have dimer (motif labels in red). 
+
+```{r motifStackFlydata, fig.width=12, fig.height=12, fig.cap="Fly data from different methods."}
+pfmpath <- system.file('extdata', "motifStack", "pfms", package = 'workshop2020')
+pfmfiles <- dir(pfmpath, full.names = TRUE)
+pfms <- lapply(pfmfiles, importMatrix, format="pfm", to="pfm")
+pfms <- unlist(pfms)
+## fix the name issue
+names(pfms) <- gsub("\\.", "_", names(pfms))
+pfms <- sapply(pfms, function(.ele){
+  .ele@name <-gsub("\\.", "_", .ele@name)
+  .ele
+})
+## get phylog
+hc <- clusterMotifs(pfms)
+library(ade4)
+phylog <- ade4::hclust2phylog(hc)
+leaves <- names(phylog$leaves)
+motifs <- pfms[leaves]
+motifSig <- motifSignature(motifs, phylog, 
+                           cutoffPval = 0.0001, min.freq=1)
+sig <- signatures(motifSig)
+gpCol <- sigColor(motifSig)
+
+##set methods color
+colorSet <- c("B1H_Mathelier"="#40E0D0", "B1H_Zhu"="#008080", 
+              "PBM_Busser"="brown", "PBM_Weirauch"="#F69156",
+              "SELEX_Nitta"="blue", 
+              "SMiLE_seq_Isakova"="#D900D9")
+methods <- factor(sub("^.*?__", "", leaves))
+lev <- levels(methods)
+levels(methods) <- colorSet[lev]
+methods <- as.character(methods)
+
+leaveNames <- gsub("__.*$", "", leaves)
+leaveCol <- ifelse(leaveNames %in% c("unc_4", "hbn", "bsh", "Optix", 
+                                     "al", "PHDP", "CG32532", "CG11294"),
+                   "#D55E00", 
+                   ifelse(leaveNames == "eve", "#0072B2", "#000000"))
+
+## calculate average of top 8 position information content for each motif
+icgp <- sapply(sapply(motifs, getIC), function(.ele)
+  mean(sort(.ele, decreasing=TRUE)[1:min(8, length(.ele))]))
+icgp.ranges <- range(icgp)
+icgp <- cut(icgp, 10, labels=colorRampPalette(c("#009E73", "#000000", "#D55E00"))(10))
+icgp.image <- as.raster(matrix(rev(levels(icgp)), ncol=1))
+icgp <- as.character(icgp)
+
+motifCircos(phylog=phylog, pfms=DNAmotifAlignment(motifs), 
+            col.tree.bg=methods, col.tree.bg.alpha=.3, 
+            r.rings=c(.05, .1), col.rings=list(icgp, rep("white", length(icgp))), 
+            col.inner.label.circle=gpCol, inner.label.circle.width=0.03,
+            labels.leaves=leaveNames, col.leaves=leaveCol, 
+            cleaves=.1, r.tree=1.3, r.leaves=.2, clabel.leaves=.7, 
+            motifScale="logarithmic", angle=358, 
+            plotIndex=TRUE, IndexCex=.7)
+
+legend(-2.4, 2.4, legend=names(colorSet), 
+       fill=highlightCol(colorSet, .3), 
+       border="white", lty=NULL, bty = "n")
+
+text(2.05, 2.3, labels="Information Content")
+rasterImage(icgp.image, 2, 1.8, 2.04, 2.2, interpolate = FALSE)
+text(c(2.05, 2.05), c(1.8, 2.2), labels=format(icgp.ranges, digits=3), adj=0)
+```
+
+## dagLogo: visualizing conserved amino acid sequence pattern in groups based on probability theory
+
+As it shown in amino acid (AA) sequence logo (Figure @ref(fig:motifStackplotAAmotif)),
+the figure is somehow busy. To optimize the vigualization of amino acid logos,
+we developed the _dagLogo_ package. This package can reduce the complex AA
+alphabets to group AAs of similar properties and provide statistical test for
+differential AA usage.
+
+```{r dagLogo, height=4, fig.cap="Visualizing conserved amino acid sequence pattern based on chemical properties"}
+## load library dagLogo
+library(dagLogo)
+## prepare the proteome of fruitfly
+proteome <- prepareProteomeByFTP(source = "UniProt", 
+                                 species = "Drosophila melanogaster")
+## read the aligned sequences
+library(Biostrings)
+dat <- readAAStringSet(system.file("extdata", "motifStack", "irg.aligned.fa",
+                                   package = "workshop2020"))
+## prepare an object of dagPeptides Class from a Proteome object
+## set the anchor to the most conserved position 
+seq <- formatSequence(seq = dat, proteome = proteome, 
+                      upstreamOffset = 25, downstreamOffset = 29)
+## build the background model 
+bg_ztest <- buildBackgroundModel(seq, background = "wholeProteome", 
+                                 proteome = proteome, testType = "ztest")
+## grouping based on the charge of AAs.
+t <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
+             groupingScheme = "chemistry_property_Mahler_group")
+dagLogo(t, legend = TRUE)
+```
+
+The package _dagLogo_ allows users to use their own grouping scheme. To make
+the information more informatively for this special case, we assign the color
+of each group by their hydrophobicity.
+
+```{r customGroup, height=4, fig.cap="Visualizing conserved amino acid sequence pattern based on chemical properties and hydrophobicity"}
+## group of the aa by chemical properties
+## order is them by hydrophobicity
+group = list(
+    RHK = c("K", "R", "H"),
+    DE= c("D","E"),
+    QN = c("Q", "N"),
+    P = "P",
+    WYF = c("W", "Y", "F"),
+    ST  = c("S", "T"),
+    CM = c("C", "M"),
+    GALIV = c("G", "A", "L", "I", "V"))
+## set the colors by color blindness safe gradient color
+library(colorBlindness)
+color <- Blue2Gray8Steps
+names(color) <- names(group)
+## assign symbols for each group
+symbol <- substring(names(group), first = 1, last = 1)
+names(symbol) <- names(group)
+## Add a grouping scheme
+## Please note that the user-supplied grouping is named 
+## as "custom_group" internally.
+addScheme(color = color, symbol = symbol, group = group)
+tt <- testDAU(dagPeptides = seq, dagBackground = bg_ztest, 
+              groupingScheme = "custom_group")
+dagLogo(tt, legend = TRUE)
+```
+
+
+## References
