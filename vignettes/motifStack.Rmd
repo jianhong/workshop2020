@@ -496,7 +496,7 @@ text(c(2.05, 2.05), c(1.8, 2.2), labels=format(icgp.ranges, digits=3), adj=0)
 
 ## dagLogo: visualizing conserved amino acid sequence pattern in groups based on probability theory
 
-As it shown in amino acid (AA) sequence logo (Figure @ref(fig:motifStackplotAAmotif)),
+As it shown in amino acid (AA) sequence logo (Figure \@ref(fig:motifStackplotAAmotif)),
 the figure is somehow busy. To optimize the vigualization of amino acid logos,
 we developed the _dagLogo_ package. This package can reduce the complex AA
 alphabets to group AAs of similar properties and provide statistical test for
