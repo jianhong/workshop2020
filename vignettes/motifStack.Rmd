@@ -167,7 +167,7 @@ motifStack(motifs)
 ## Plot single sequence logo
 
 _motifStack_ can be used to plot DNA/RNA sequence logo, affinity logo and 
-amino acid sequence log. 
+amino acid sequence logo. 
 It provides the flexibility for users to customize the graphic parameters 
 such as the font family, symbol colors and markers. 
 Different from most of the sequence logo plotting tools, _motifStack_ does not
