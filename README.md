@@ -12,3 +12,12 @@ With breakthroughs in Next Generation Sequencing (NGS),
     the pipeline with sample data in order to make researchers confident 
     in sequencing data analysis, understanding the results and presenting the 
     data by themselves. 
+    
+    
+## Installation
+
+```
+library(BiocManager)
+install("jianhong/workshop2020", build_vignettes = TRUE)
+```
+

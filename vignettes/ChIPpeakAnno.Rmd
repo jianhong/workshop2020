@@ -5,8 +5,12 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 output: 
-  html_document:
-    css: custom.css
+  bookdown::html_document2:
+    theme: simplex
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    fig_caption: true
 ---
 
 ```{r "setup", include=FALSE}
@@ -237,6 +241,7 @@ genome(seqinfo(Gencode)) <-
   genome(seqinfo(Ensembl)) <- factor("hg19")
 isCircular(seqinfo(UCSC)) <- rep(FALSE, length(seqlevels(UCSC)))
 isCircular(seqinfo(Gencode)) <- rep(FALSE, length(seqlevels(Gencode)))
+seqlevels(Ensembl) <- sub("chrMT", "chrM", seqlevels(Ensembl))
 seqlengths(Ensembl)["chrM"] <- seqlengths(UCSC)["chrM"]
 ## find the overlaps by max gap = 0 bp.
 ol <- findOverlapsOfPeaks(Ensembl, 

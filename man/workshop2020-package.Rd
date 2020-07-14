@@ -19,3 +19,11 @@ the pipeline with sample data in order to make researchers confident
 in sequencing data analysis, understanding the results and presenting the 
 data by themselves.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://jianhong.github.io/workshop2020}
+  \item Report bugs at \url{https://github.com/jianhong/workshop2020/issues/new/choose}
+}
+
+}

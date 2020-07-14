@@ -4,7 +4,13 @@ vignette: >
   %\VignetteIndexEntry{ATACseqQC_workshop2020}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-output: html_document
+output: 
+  bookdown::html_document2:
+    theme: simplex
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    fig_caption: true
 ---
 
 ```{r setup, include=FALSE}
@@ -38,7 +44,7 @@ library(ATACseqQC)
 estimateLibComplexity(readsDupFreq(file.path(extfilePath, "GL3.chr1.bam")))
 ```
 
-![library complexity curve](libComp.jpg)
+![library complexity curve](`r system.file('vignettes', 'libComp.jpg', package = 'workshop2020')`)
 
 ## Fragment size distribution
 
@@ -191,7 +197,7 @@ featureAlignedHeatmap(sigs.log2, reCenterPeaks(TSS, width=ups+dws),
 ```
 
 Here is the heatmap for the full dataset.
-![metagene](heatmap.jpg)
+![metagene](`r system.file('vignettes', 'heatmap.jpg', package = 'workshop2020')`)
 
 ```{r fig.show="hide"}
 ## get signals normalized for nucleosome-free and nucleosome-bound regions.
@@ -235,7 +241,7 @@ sigs <- factorFootprints(shiftedBamfile, pfm=CTCF[[1]],
                          upstream=100, downstream=100)
 ```
 Here is the CTCF footprints for the full dataset.
-![CTCF footprints](CTCFfootprints.png)
+![CTCF footprints](`r system.file('vignettes', 'CTCFfootprints.png', package = 'workshop2020')`)
 
 
 ## V-plot
@@ -249,5 +255,5 @@ vp <- vPlot(shiftedBamfile, pfm=CTCF[[1]],
             ylim=c(30, 250), bandwidth=c(2, 1))
 ```
 Here is the CTCF vPlot for the full dataset.
-![CTCF footprints](CTCFvPlot.png)
+![CTCF footprints](`r system.file('vignettes', 'CTCFvPlot.png', package = 'workshop2020')`)
 

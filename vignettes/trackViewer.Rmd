@@ -1,14 +1,18 @@
 ---
 title: "trackViewer_workshop2020"
-bibliography: bibliography.bib
-csl: nature.csl
+bibliography: "`r system.file('vignettes', 'bibliography.bib', package = 'workshop2020')`"
+csl: "`r system.file('vignettes', 'nature.csl', package = 'workshop2020')`"
 vignette: >
   %\VignetteIndexEntry{trackViewer_workshop2020}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 output: 
   bookdown::html_document2:
-    css: custom.css
+    theme: simplex
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    fig_caption: true
 ---
 
 ```{r checkplatform, include=FALSE}
@@ -19,6 +23,7 @@ suppressPackageStartupMessages({
   library(VariantAnnotation)
   library(TxDb.Hsapiens.UCSC.hg19.knownGene)
   library(org.Hs.eg.db)
+  library(GenomicFeatures)
 })
 opts_chunk$set(eval=TRUE, fig.width=6, fig.height=2, 
                warning = FALSE, message = FALSE)
@@ -112,12 +117,24 @@ features.gr <- GRanges("chr1", IRanges(c(1, 501, 1001),
 
 ### Step 3. Plot lollipop plot
 
+The clustered events could be visualized one by one by jittered lollipop positions.
+
 ```{r quickStartStep3, fig.width=6, fig.height=3.5}
 lolliplot(sample.gr, features.gr)
 ```
 
 
 ## Plot data from Variant Call Format (VCF) file
+
+VCF is a text file format that contains metadata and mutation information about
+genomic positions, original genotypes and optional genotypes. 
+The _trackViewer_ package could show single nucleotide polymorphisms (SNPs) 
+from VCF file in lollipop-style plot. Figure \@ref(fig:plotVCFdata) shows an 
+example lollipop plot of real SNPs. Sample SNPs are a subset of 1000 variants 
+and 50 samples from chromosome 22 taken from 1000 Genomes in VCF in the 
+_VariantAnnotation_ package. 
+Different colors depict the new SNP events in the circles. 
+The number of circles indicates the number of SNP events. 
 
 ```{r plotVCFdata, fig.width=12,fig.height=5.5,dpi=72,fig.cap="lollipop plot for VCF data"}
 library(VariantAnnotation) ## load package for reading vcf file
@@ -170,6 +187,12 @@ lolliplot(mutation.frequency,
 
 ## Plot methylation data from bed format file
 
+Any data can imported into a `GRanges` object can be viewed by _trackViewer_ package.
+Sample methylations are random data generated for illustration and saved in bed format file.
+The _rtracklayer_ package is used to import the methylation data into a `GRanges`.
+The transcripts are extracted from `TxDb` object and assigned gene symbol with `org` database.
+Here also show multiple transcripts could be shown in different colors and tracks.
+
 ```{r plotMethyBed, fig.width=12,fig.height=4,dpi=72,fig.cap="lollipop plot, pie layout"}
 library(TxDb.Hsapiens.UCSC.hg19.knownGene) ## load package for gene model
 library(org.Hs.eg.db) ## load package for gene name
@@ -209,6 +232,9 @@ lolliplot(methy, features,
 
 ## Plot lollipop plot for multiple patients in "pie.stack" layout
 
+The percentage of methylation rates are shown by pie graph in different layers 
+for different patients. 
+
 ```{r plotMethypieStack, fig.width=12,fig.height=4,dpi=72,fig.cap="lollipop plot, pie.stack layout"}
 ## simulate multiple patients
 rand.id <- sample.int(length(methy), 3*length(methy), replace=TRUE)
@@ -246,7 +272,11 @@ lolliplot(methy.mul.patient,
 
 ## Plot lollipop plot in caterpillar layout to compare two samples
 
+The caterpillar layout can be used to side by side comparing two samples or
+to display dense data.
+
 ```{r plotCaterpillar, fig.width=12,fig.height=6,dpi=72,fig.cap="lollipop plot, caterpillar layout"}
+## use SNPsideID to set the layer of event
 sample.gr$SNPsideID <- sample(c("top", "bottom"), 
                                length(sample.gr),
                                replace=TRUE)
@@ -272,5 +302,86 @@ methy$score <- methy$score/m
 # The area of the fan indicate the percentage of methylation or rate of mutation.
 dandelion.plot(methy, features, ranges=gr, type="fan")
 ```
+
+## Browse genomic data by _trackViewer_
+
+There are two packages available in Bioconductor for visualizing genomic data: 
+_rtracklayer_ and _Gviz_. The _rtracklayer_ package provides an interface to 
+genome browsers and associated annotation tracks. 
+The _Gviz_ package can be used to plot coverage and annotation tracks. 
+The _trackViewer_ is a lightweight visualization tool for generating 
+interactive figures for publication. 
+
+TDP-43 cross-linking and immunoprecipitation coupled with high-throughput 
+sequencing (CLIP-seq) and corresponding RNA-seq mapped files were downloaded
+from gene expression omnibus database (GSE27394)([@polymenidou2011long]). 
+The reads of replicates were combined. 
+Figure \@ref(fig:plotTDPdata) shows an example of alternative splicing change 
+on exon 18 of sortilin 1 (Sort1). 
+Cyan and blue arrows depict increased density of reads in the TDP-43
+knockdown samples compared with controls. 
+The CLIP-seq peaks upstream of exon 17 in between two dashed gray lines are 
+potential functional peaks.
+
+```{r plotTDPdata, fig.width=12,fig.height=8,dpi=72,fig.cap="Tracks for Sort1 exclusive exon", message=FALSE}
+library(trackViewer) # load package
+gr <- parse2GRanges("chr3:108,476,000-108,485,000")
+library(GenomicFeatures) # load GenomicFeatures to create TxDb from UCSC
+path <- system.file("extdata", "trackViewer", package = "workshop2020")
+if(interactive()){
+    mm8KG <- makeTxDbFromUCSC(genome="mm8", tablename="knownGene")
+    saveDb(mm8KG, "mm8KG.sqlite")
+}else{## mm8KG was saved as sqlite file
+    mm8KG <- loadDb(file.path(path, "mm8KG.sqlite"))
+}
+library(org.Mm.eg.db) # load annotation database
+## create the gene model tracks information
+trs <- geneModelFromTxdb(mm8KG, org.Mm.eg.db, gr=gr)
+## import data from bedGraph/bigWig/BED ... files, see ?importScore for details
+CLIP <- importScore(file.path(path, "CLIP.bedGraph"), format="bedGraph", ranges=gr)
+control <- importScore(file.path(path, "control.bedGraph"), format="bedGraph", ranges=gr)
+knockdown <- importScore(file.path(path, "knockdown.bedGraph"), format="bedGraph", ranges=gr)
+## create styles by preset theme
+optSty <- optimizeStyle(trackList(trs, knockdown, control, CLIP), theme="col")
+trackList <- optSty$tracks
+viewerStyle <- optSty$style
+## adjust the styles for this track
+### rename the trackList for each track
+names(trackList)[1:2] <- paste0("Sort1: ", names(trackList)[1:2])
+names(trackList)[3] <- "RNA-seq TDP-43 KD"
+names(trackList)[4] <- "RNA-seq control"
+### change the lab positions for gene model track to bottomleft
+setTrackStyleParam(trackList[[1]], "ylabpos", "bottomleft")
+setTrackStyleParam(trackList[[2]], "ylabpos", "bottomleft")
+### change the color of gene model track
+setTrackStyleParam(trackList[[1]], "ylabgp", list(cex=1, col="red"))
+setTrackStyleParam(trackList[[2]], "ylabgp", list(cex=1, col="green"))
+### remove the xaxis
+setTrackViewerStyleParam(viewerStyle, "xaxis", FALSE)
+### add a scale bar in CLIP track
+setTrackXscaleParam(trackList[[5]], "draw", TRUE)
+## plot the tracks
+vp <- viewTracks(trackList, gr=gr, viewerStyle=viewerStyle)
+### add guide lines to show the range of CLIP-seq signal
+addGuideLine(c(108481252, 108481887), vp=vp)
+### add arrow mark to show the alternative splicing event
+addArrowMark(list(x=c(108483570, 108483570), 
+                  y=c(3, 4)), 
+             label=c("Inclusive\nexon", ""), 
+             col=c("blue", "cyan"), 
+             vp=vp, quadrant=1)
+```
+
+### Browse the tracks by a web browser
+
+Users can also browse the tracks by a web browser.
+In addition, we implemented a web application of _trackViewer_ leveraging Shiny 
+package. The web application of trackViewer is available at
+https://github.com/jianhong/trackViewer.documentation/tree/master/trackViewerShinyApp.
+
+```{r browseTracks, fig.width=12,fig.height=8}
+browseTracks(trackList, gr=gr)
+```
+
 
 

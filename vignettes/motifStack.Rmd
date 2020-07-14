@@ -1,14 +1,18 @@
 ---
 title: "motifStack_workshop2020"
-bibliography: ref.bib
-csl: nature.csl
+bibliography: "`r system.file('vignettes', 'ref.bib', package = 'workshop2020')`"
+csl: "`r system.file('vignettes', 'nature.csl', package = 'workshop2020')`"
 vignette: >
   %\VignetteIndexEntry{motifStack_workshop2020}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 output: 
   bookdown::html_document2:
-    css: custom.css
+    theme: simplex
+    toc: true
+    toc_float: true
+    toc_depth: 4
+    fig_caption: true
 ---
 
 ```{r checkplatform, include=FALSE}
