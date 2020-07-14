@@ -24,6 +24,7 @@ suppressPackageStartupMessages({
   library(TxDb.Hsapiens.UCSC.hg19.knownGene)
   library(org.Hs.eg.db)
   library(GenomicFeatures)
+  library(org.Mm.eg.db)
 })
 opts_chunk$set(eval=TRUE, fig.width=6, fig.height=2, 
                warning = FALSE, message = FALSE)
@@ -164,6 +165,7 @@ mutation.frequency$score <- round(mutation.frequency$AF*100)
 mutation.frequency$label.parameter.rot <- 45
 ## keep sequence level style same
 seqlevelsStyle(gr) <- seqlevelsStyle(mutation.frequency) <- "UCSC"
+seqlevels(mutation.frequency) <- "chr22"
 ## extract transcripts in the range
 trs <- geneModelFromTxdb(TxDb.Hsapiens.UCSC.hg19.knownGene, 
                          org.Hs.eg.db, gr=gr)
@@ -379,7 +381,7 @@ In addition, we implemented a web application of _trackViewer_ leveraging Shiny
 package. The web application of trackViewer is available at
 https://github.com/jianhong/trackViewer.documentation/tree/master/trackViewerShinyApp.
 
-```{r browseTracks, fig.width=12,fig.height=8}
+```{r browseTracks, fig.width=8,fig.height=4}
 browseTracks(trackList, gr=gr)
 ```
 
