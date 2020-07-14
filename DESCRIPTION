@@ -38,6 +38,7 @@ Imports:
     motifStack,
     MotifDb,
     org.Hs.eg.db,
+    pander,
     RColorBrewer,
     reactome.db,
     Rsamtools,
@@ -47,6 +48,7 @@ Imports:
     TxDb.Hsapiens.UCSC.hg19.knownGene,
     TxDb.Hsapiens.UCSC.hg38.knownGene,
     UpSetR,
+    VariantAnnotation,
     WriteXLS
 License: MIT + file LICENSE
 LazyData: TRUE
