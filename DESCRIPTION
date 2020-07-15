@@ -1,7 +1,7 @@
 Package: workshop2020
 Type: Package
 Title: Basic and advanced bioinformatics for RegenerationNEXT
-Version: 0.0.6
+Version: 0.0.7
 Author: Jianhong Ou
 Maintainer: Jianhong Ou <jianhong.ou@duke.com>
 Description: With breakthroughs in Next Generation Sequencing (NGS), 
@@ -35,6 +35,7 @@ Imports:
     GenomicFeatures,
     ggplot2,
     GO.db,
+    jpeg,
     kableExtra,
     knitr,
     motifStack,
@@ -43,6 +44,7 @@ Imports:
     org.Mm.eg.db,
     pander, 
     pkgdown,
+    png,
     RColorBrewer,
     reactome.db,
     Rsamtools,

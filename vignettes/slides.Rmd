@@ -1,0 +1,13 @@
+---
+title: "slides"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+* [ATACseqQC](https://github.com/jianhong/workshop2020/blob/master/inst/extdata/ATACseqQC_workshop2020.pdf)
+* [ChIPpeakAnno](https://github.com/jianhong/workshop2020/blob/master/inst/extdata/ChIPpeakAnno_workshop2020.pdf)
+* [motifStack](https://github.com/jianhong/workshop2020/blob/master/inst/extdata/motifStack_workshop2020.pdf)
+* [trackViewer](https://github.com/jianhong/workshop2020/blob/master/inst/extdata/trackViewer_workshop2020.pdf)
