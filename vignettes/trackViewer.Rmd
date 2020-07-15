@@ -285,7 +285,7 @@ sample.gr$SNPsideID <- sample(c("top", "bottom"),
 lolliplot(sample.gr, features.gr)
 ```
 
-## Dandelion plot hundreds SNPs
+## Dandelion plot hundreds events
 
 Sometimes, there are as many as hundreds of SNPs or methylation status involved in one gene.
 Dandelion plot can be used to depict such dense SNPs or methylation. 
@@ -383,6 +383,43 @@ https://github.com/jianhong/trackViewer.documentation/tree/master/trackViewerShi
 
 ```{r browseTracks, fig.width=8,fig.height=4}
 browseTracks(trackList, gr=gr)
+```
+
+
+## Plot epigenetic data by _trackViewer_
+
+Epigenetics is the study of mechanisms that produce phenotype changes without 
+alterations in the DNA sequence. 
+It includes DNA methylation, histone modification and non-coding RNA.
+Above we showed how to use the _trackViewer_ package to plot lollipop plots for
+DNA methylation. The _trackViewer_ can also plot the lollipop plot with the 
+coverage and annotation tracks for histone modification. 
+
+```{r plotHistoneModification, fig.width=8,fig.height=8,dpi=72,fig.cap="Plot the lollipop plot with the coverage and annotation tracks", message=FALSE}
+## we simulate 2 group of the DNA methylation data
+len <- 30
+TDPmethySimGP1 <- GRanges("chr3", 
+                          IRanges(sample(108476000:108485000, size = len), 
+                                  width = 1), strand = "+")
+TDPmethySimGP1$type <- "pie" ## plot the methylation data in pie style
+TDPmethySimGP2 <- TDPmethySimGP1
+## set the methylation
+TDPmethySimGP1$score <- sample.int(100, size = len, replace = TRUE)
+TDPmethySimGP1$unmethy <- 100 - TDPmethySimGP1$score
+TDPmethySimGP2$score <- sample.int(100, size = len, replace = TRUE)
+TDPmethySimGP2$unmethy <- 100 - TDPmethySimGP2$score
+## create the lollipopData track
+lollipopData <- new("track",
+                    dat=TDPmethySimGP1, 
+                    dat2=TDPmethySimGP2,
+                    type = "lollipopData")
+## create styles by preset theme
+optSty <- optimizeStyle(trackList(trs, knockdown, control, CLIP, lollipopData), 
+                        theme="col")
+trackList <- optSty$tracks
+viewerStyle <- optSty$style
+## plot the tracks
+vp <- viewTracks(trackList, gr=gr, viewerStyle=viewerStyle)
 ```
 
 

@@ -1,5 +1,10 @@
 # workshop2020: Basic and advanced bioinformatics for RegenerationNEXT
 
+![CI](https://github.com/jianhong/workshop2020/workflows/CI/badge.svg)
+
+[github page](https://jianhong.github.io/workshop2020/) | 
+[source code](https://github.com/jianhong/workshop2020)
+
 With breakthroughs in Next Generation Sequencing (NGS), 
     we are collecting vast amounts of data that will be analyzed for screening
     interesting targets. The details of these data reveal basic information 
