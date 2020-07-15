@@ -241,7 +241,7 @@ sigs <- factorFootprints(shiftedBamfile, pfm=CTCF[[1]],
                          upstream=100, downstream=100)
 ```
 Here is the CTCF footprints for the full dataset.
-![CTCF footprints](`r system.file('vignettes', 'CTCFfootprints.png', package = 'workshop2020')`)
+![CTCF footprints](`r system.file('vignettes', 'CtCFfootprints.png', package = 'workshop2020')`)
 
 
 ## V-plot
