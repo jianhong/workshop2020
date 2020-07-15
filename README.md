@@ -26,3 +26,16 @@ library(BiocManager)
 install("jianhong/workshop2020", build_vignettes = TRUE)
 ```
 
+## vignettes
+
+* [ATACseqQC](https://jianhong.github.io/workshop2020/articles/ATACseqQC.html)
+* [ChIPpeakAnno](https://jianhong.github.io/workshop2020/articles/ChIPpeakAnno.html)
+* [motifStack](https://jianhong.github.io/workshop2020/articles/motifStack.html)
+* [trackViewer](https://jianhong.github.io/workshop2020/articles/trackViewer.html)
+
+## slides
+
+* [ATACseqQC](https://github.com/jianhong/workshop2020/blob/master/inst/extdata/ATACseqQC_workshop2020.pdf)
+* [ChIPpeakAnno](https://github.com/jianhong/workshop2020/blob/master/inst/extdata/ChIPpeakAnno_workshop2020.pdf)
+* [motifStack](https://github.com/jianhong/workshop2020/blob/master/inst/extdata/motifStack_workshop2020.pdf)
+* [trackViewer](https://github.com/jianhong/workshop2020/blob/master/inst/extdata/trackViewer_workshop2020.pdf)
