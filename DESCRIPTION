@@ -1,7 +1,7 @@
 Package: workshop2020
 Type: Package
 Title: Basic and advanced bioinformatics for RegenerationNEXT
-Version: 0.1.0
+Version: 0.1.1
 Author: Jianhong Ou
 Maintainer: Jianhong Ou <jianhong.ou@duke.com>
 Description: With breakthroughs in Next Generation Sequencing (NGS), 
