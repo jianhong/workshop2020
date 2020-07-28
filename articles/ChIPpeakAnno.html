@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">workshop2020</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.2</span>
       </span>
     </div>
 
@@ -185,7 +185,7 @@
 <span class="no">hg19</span> <span class="kw">&lt;-</span> <span class="kw pkg">AnnotationHub</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">query</a></span>(<span class="no">ah</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"UCSC"</span>, <span class="st">"Hsapiens"</span>, <span class="st">"hg19"</span>, <span class="st">"knownGene"</span>))
 <span class="no">hg19</span></pre></body></html></div>
 <pre><code>## AnnotationHub with 1 record
-## # snapshotDate(): 2020-06-18
+## # snapshotDate(): 2020-07-20
 ## # names(): AH52258
 ## # $dataprovider: UCSC
 ## # $species: Homo sapiens
@@ -258,8 +258,8 @@
 <div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="co"># A pie chart can be used to demonstrate the overlap features of the peaks.</span>
 <span class="fu"><a href="https://rdrr.io/pkg/ChIPpeakAnno/man/pie1.html">pie1</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="no">annoEnsDb</span>$<span class="no">insideFeature</span>))</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/annotateEnsDb-1.png" alt="Figure 1. Pie chart of common peaks among EnsDb features." width="700"><p class="caption">
-Figure 1. Pie chart of common peaks among EnsDb features.
+<img src="ChIPpeakAnno_files/figure-html/annotateEnsDb-1.png" alt="Pie chart of common peaks among EnsDb features." width="700"><p class="caption">
+Pie chart of common peaks among EnsDb features.
 </p>
 </div>
 <div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="co">## keep the seqnames in the same style</span>
@@ -295,8 +295,8 @@ Figure 1. Pie chart of common peaks among EnsDb features.
 <div class="sourceCode" id="cb25"><html><body><pre class="r"><span class="co"># A pie chart can be used to demonstrate the overlap features of the peaks.</span>
 <span class="fu"><a href="https://rdrr.io/pkg/ChIPpeakAnno/man/pie1.html">pie1</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="no">annoMart</span>$<span class="no">insideFeature</span>))</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/annotateBiomaRt-1.png" alt="Figure 2. Pie chart of common peaks among biomart features." width="700"><p class="caption">
-Figure 2. Pie chart of common peaks among biomart features.
+<img src="ChIPpeakAnno_files/figure-html/annotateBiomaRt-1.png" alt="Pie chart of common peaks among biomart features." width="700"><p class="caption">
+Pie chart of common peaks among biomart features.
 </p>
 </div>
 <p>We can see the minor difference between them. Lets check the reasons.</p>
@@ -369,8 +369,8 @@ Figure 2. Pie chart of common peaks among biomart features.
 <div class="sourceCode" id="cb38"><html><body><pre class="r"><span class="co"># A pie chart can be used to demonstrate the overlap features of the peaks.</span>
 <span class="fu"><a href="https://rdrr.io/pkg/ChIPpeakAnno/man/pie1.html">pie1</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="no">annoTxDb</span>$<span class="no">insideFeature</span>))</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/annotateTxDb-1.png" alt="Figure 3. Pie chart of common peaks among TxDb features." width="700"><p class="caption">
-Figure 3. Pie chart of common peaks among TxDb features.
+<img src="ChIPpeakAnno_files/figure-html/annotateTxDb-1.png" alt="Pie chart of common peaks among TxDb features." width="700"><p class="caption">
+Pie chart of common peaks among TxDb features.
 </p>
 </div>
 <p>Now we try to use gencode v32 annotations to annotate the peaks.</p>
@@ -411,8 +411,8 @@ Figure 3. Pie chart of common peaks among TxDb features.
 <div class="sourceCode" id="cb41"><html><body><pre class="r"><span class="co"># A pie chart can be used to demonstrate the overlap features of the peaks.</span>
 <span class="fu"><a href="https://rdrr.io/pkg/ChIPpeakAnno/man/pie1.html">pie1</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="no">annoGencode</span>$<span class="no">insideFeature</span>))</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/annotateGencode-1.png" alt="Figure 4. Pie chart of common peaks among Gencode features." width="700"><p class="caption">
-Figure 4. Pie chart of common peaks among Gencode features.
+<img src="ChIPpeakAnno_files/figure-html/annotateGencode-1.png" alt="Pie chart of common peaks among Gencode features." width="700"><p class="caption">
+Pie chart of common peaks among Gencode features.
 </p>
 </div>
 <p>We can see the difference between the annotations among Ensembl, UCSC and Gencode in annotation. Let’s check the overlaps of annotations.</p>
@@ -436,8 +436,8 @@ Figure 4. Pie chart of common peaks among Gencode features.
 <span class="co">## venn diagram to show the overlaps</span>
 <span class="fu"><a href="https://rdrr.io/pkg/ChIPpeakAnno/man/makeVennDiagram.html">makeVennDiagram</a></span>(<span class="no">ol</span>, <span class="kw">connectedPeaks</span> <span class="kw">=</span> <span class="st">"keepAll"</span>)</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/Ensembl.vs.UCSC-1.png" alt="Figure 5. The overlap and intersection among UCSC, Ensembl, and Gencode annotations." width="700"><p class="caption">
-Figure 5. The overlap and intersection among UCSC, Ensembl, and Gencode annotations.
+<img src="ChIPpeakAnno_files/figure-html/Ensembl.vs.UCSC-1.png" alt="The overlap and intersection among UCSC, Ensembl, and Gencode annotations." width="700"><p class="caption">
+The overlap and intersection among UCSC, Ensembl, and Gencode annotations.
 </p>
 </div>
 <pre><code>## $p.value
@@ -589,8 +589,8 @@ Figure 5. The overlap and intersection among UCSC, Ensembl, and Gencode annotati
                     <span class="kw">Gencode</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html">unique</a></span>(<span class="no">annoGencode</span>$<span class="no">symbol</span>))),
       <span class="kw">order.by</span> <span class="kw">=</span> <span class="st">"freq"</span>)</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/addIDs-1.png" alt="Figure 6. upset plot of common gene symbols among annotations by Ensembl, UCSC and Gencode features." width="700"><p class="caption">
-Figure 6. upset plot of common gene symbols among annotations by Ensembl, UCSC and Gencode features.
+<img src="ChIPpeakAnno_files/figure-html/addIDs-1.png" alt="upset plot of common gene symbols among annotations by Ensembl, UCSC and Gencode features." width="700"><p class="caption">
+upset plot of common gene symbols among annotations by Ensembl, UCSC and Gencode features.
 </p>
 </div>
 <p>As a conclusion, annotate with different annotation resources, even the other parameter keep same, the annotations will be different from each other. To improve the reproducibility, accuracy of an annotation source should be provided. Some people were advertizing their tools by playing this trick by using different annotations to mislead users.</p>
@@ -629,8 +629,8 @@ overlapping peaks or unique peaks), and overlappingPeaks (a list of data frame c
                 <span class="kw">col</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#D55E00"</span>, <span class="st">"#0072B2"</span>), <span class="co">#circle border color</span>
                 <span class="kw">cat.col</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#D55E00"</span>, <span class="st">"#0072B2"</span>)) <span class="co"># label color, keep same as circle border color</span></pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/findOverlapsOfPeaks-1.png" alt="Figure 7. Venn diagram of overlaps for replicated experiments" width="576"><p class="caption">
-Figure 7. Venn diagram of overlaps for replicated experiments
+<img src="ChIPpeakAnno_files/figure-html/findOverlapsOfPeaks-1.png" alt="Venn diagram of overlaps for replicated experiments" width="576"><p class="caption">
+Venn diagram of overlaps for replicated experiments
 </p>
 </div>
 <pre><code>## $p.value
@@ -659,8 +659,8 @@ Figure 7. Venn diagram of overlaps for replicated experiments
                 <span class="kw">cat.col</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#D55E00"</span>, <span class="st">"#0072B2"</span>),
                 <span class="kw">connectedPeaks</span> <span class="kw">=</span> <span class="st">"keepAll"</span>)</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/vennDiagramKeepAll-1.png" alt="Figure 8. Venn diagram of overlaps with all original counts." width="576"><p class="caption">
-Figure 8. Venn diagram of overlaps with all original counts.
+<img src="ChIPpeakAnno_files/figure-html/vennDiagramKeepAll-1.png" alt="Venn diagram of overlaps with all original counts." width="576"><p class="caption">
+Venn diagram of overlaps with all original counts.
 </p>
 </div>
 <pre><code>## $p.value
@@ -694,8 +694,8 @@ Figure 8. Venn diagram of overlaps with all original counts.
                            <span class="kw">TxDb</span><span class="kw">=</span><span class="no">TxDb.Hsapiens.UCSC.hg19.knownGene</span>)
 <span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span>(<span class="no">aCR</span>$<span class="no">percentage</span>, <span class="kw">las</span><span class="kw">=</span><span class="fl">3</span>)</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/assignChromosomeRegion-1.png" alt="Figure 9. Peak distribution over different genomic features." width="960"><p class="caption">
-Figure 9. Peak distribution over different genomic features.
+<img src="ChIPpeakAnno_files/figure-html/assignChromosomeRegion-1.png" alt="Peak distribution over different genomic features." width="960"><p class="caption">
+Peak distribution over different genomic features.
 </p>
 </div>
 <p>In addition, the distribution of the distance of overlapped peaks to the nearest feature such as the transcription start sites (TSS) can be plotted by the <code>binOverFeature</code> function. The sample code here plots the distribution of peaks around the TSS.</p>
@@ -704,8 +704,8 @@ Figure 9. Peak distribution over different genomic features.
                <span class="kw">ylab</span><span class="kw">=</span><span class="st">"count"</span>,
                <span class="kw">main</span><span class="kw">=</span><span class="st">"Distribution of aggregated peak numbers around TSS"</span>)</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/binOverFeature-1.png" alt="Figure 10. Distribution of peaks around transcript start sites." width="768"><p class="caption">
-Figure 10. Distribution of peaks around transcript start sites.
+<img src="ChIPpeakAnno_files/figure-html/binOverFeature-1.png" alt="Distribution of peaks around transcript start sites." width="768"><p class="caption">
+Distribution of peaks around transcript start sites.
 </p>
 </div>
 </div>
@@ -744,8 +744,8 @@ Figure 10. Distribution of peaks around transcript start sites.
 <p>The distribution of the common peaks around features can be visualized using a pie chart.</p>
 <div class="sourceCode" id="cb70"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/ChIPpeakAnno/man/pie1.html">pie1</a></span>(<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span>(<span class="no">overlaps.anno</span>$<span class="no">insideFeature</span>))</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/pieChartBiPromoter-1.png" alt="Figure 11. Pie chart of the distribution of common peaks around features." width="700"><p class="caption">
-Figure 11. Pie chart of the distribution of common peaks around features.
+<img src="ChIPpeakAnno_files/figure-html/pieChartBiPromoter-1.png" alt="Pie chart of the distribution of common peaks around features." width="700"><p class="caption">
+Pie chart of the distribution of common peaks around features.
 </p>
 </div>
 </div>
@@ -800,8 +800,8 @@ Figure 11. Pie chart of the distribution of common peaks around features.
 <span class="fu"><a href="https://rdrr.io/r/graphics/text.html">text</a></span>(<span class="no">zscore</span>[<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">zscore</span>)], <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span>(<span class="no">h</span>$<span class="no">counts</span>)/<span class="fl">10</span>,
      <span class="kw">labels</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span>(<span class="no">zscore</span>[<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">zscore</span>)]), <span class="kw">srt</span><span class="kw">=</span><span class="fl">90</span>)</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/consensus-1.png" alt="Figure 12. Histogram of Z-score of 6-mer" width="576"><p class="caption">
-Figure 12. Histogram of Z-score of 6-mer
+<img src="ChIPpeakAnno_files/figure-html/consensus-1.png" alt="Histogram of Z-score of 6-mer" width="576"><p class="caption">
+Histogram of Z-score of 6-mer
 </p>
 </div>
 <div class="sourceCode" id="cb76"><html><body><pre class="r"><span class="co">## generate the motifs</span>
@@ -811,8 +811,8 @@ Figure 12. Histogram of Z-score of 6-mer
     <span class="no">os</span>$<span class="no">motifs</span>, <span class="fl">1</span>:<span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span>(<span class="no">os</span>$<span class="no">motifs</span>))
 <span class="fu"><a href="https://rdrr.io/pkg/motifStack/man/motifStack.html">motifStack</a></span>(<span class="no">pfms</span>)</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/simulation.motif-1.png" alt="Figure 13. Motif of simulation data" width="576"><p class="caption">
-Figure 13. Motif of simulation data
+<img src="ChIPpeakAnno_files/figure-html/simulation.motif-1.png" alt="Motif of simulation data" width="576"><p class="caption">
+Motif of simulation data
 </p>
 </div>
 </div>
@@ -883,8 +883,8 @@ Figure 13. Motif of simulation data
                 <span class="kw">col</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#D55E00"</span>, <span class="st">"#0072B2"</span>, <span class="st">"#E69F00"</span>), <span class="co">#circle border color</span>
                 <span class="kw">cat.col</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#D55E00"</span>, <span class="st">"#0072B2"</span>, <span class="st">"#E69F00"</span>))</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/vennDiagram-1.png" alt="Figure 14. Venn diagram of overlaps." width="576"><p class="caption">
-Figure 14. Venn diagram of overlaps.
+<img src="ChIPpeakAnno_files/figure-html/vennDiagram-1.png" alt="Venn diagram of overlaps." width="576"><p class="caption">
+Venn diagram of overlaps.
 </p>
 </div>
 <pre><code>## $p.value
@@ -913,8 +913,8 @@ Figure 14. Venn diagram of overlaps.
                 <span class="kw">col</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#D55E00"</span>, <span class="st">"#0072B2"</span>, <span class="st">"#E69F00"</span>),
                 <span class="kw">cat.col</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="st">"#D55E00"</span>, <span class="st">"#0072B2"</span>, <span class="st">"#E69F00"</span>))</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/vennDiagramForFirstConsistent-1.png" alt="Figure 15. Venn diagram of overlaps for first TF." width="576"><p class="caption">
-Figure 15. Venn diagram of overlaps for first TF.
+<img src="ChIPpeakAnno_files/figure-html/vennDiagramForFirstConsistent-1.png" alt="Venn diagram of overlaps for first TF." width="576"><p class="caption">
+Venn diagram of overlaps for first TF.
 </p>
 </div>
 <pre><code>## $p.value
@@ -961,15 +961,15 @@ Figure 15. Venn diagram of overlaps for first TF.
     <span class="no">pt1</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ChIPpeakAnno/man/peakPermTest.html">peakPermTest</a></span>(<span class="no">YY1</span>, <span class="no">TEAD4</span>, <span class="kw">pool</span><span class="kw">=</span><span class="no">pool</span>, <span class="kw">seed</span><span class="kw">=</span><span class="fl">1</span>, <span class="kw">force.parallel</span><span class="kw">=</span><span class="fl">FALSE</span>)
     <span class="fu"><a href="https://rdrr.io/pkg/motifStack/man/pcm-class.html">plot</a></span>(<span class="no">pt1</span>)</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/peakPermTest1-1.png" alt="Figure 16. permutation test for YY1 and TEAD4" width="700"><p class="caption">
-Figure 16. permutation test for YY1 and TEAD4
+<img src="ChIPpeakAnno_files/figure-html/peakPermTest1-1.png" alt="permutation test for YY1 and TEAD4" width="700"><p class="caption">
+permutation test for YY1 and TEAD4
 </p>
 </div>
 <div class="sourceCode" id="cb88"><html><body><pre class="r">    <span class="no">pt2</span> <span class="kw">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/ChIPpeakAnno/man/peakPermTest.html">peakPermTest</a></span>(<span class="no">YY1</span>, <span class="no">TAF</span>, <span class="kw">pool</span><span class="kw">=</span><span class="no">pool</span>, <span class="kw">seed</span><span class="kw">=</span><span class="fl">1</span>, <span class="kw">force.parallel</span><span class="kw">=</span><span class="fl">FALSE</span>)
     <span class="fu"><a href="https://rdrr.io/pkg/motifStack/man/pcm-class.html">plot</a></span>(<span class="no">pt2</span>)</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/peakPermTest2-1.png" alt="Figure 17. permutation test for YY1 and TAF" width="700"><p class="caption">
-Figure 17. permutation test for YY1 and TAF
+<img src="ChIPpeakAnno_files/figure-html/peakPermTest2-1.png" alt="permutation test for YY1 and TAF" width="700"><p class="caption">
+permutation test for YY1 and TAF
 </p>
 </div>
 </div>
@@ -1006,16 +1006,16 @@ Figure 17. permutation test for YY1 and TAF
                                  <span class="kw">upstream</span><span class="kw">=</span><span class="fl">2000</span>, <span class="kw">downstream</span><span class="kw">=</span><span class="fl">2000</span>,
                                  <span class="kw">upper.extreme</span><span class="kw">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span>(<span class="fl">3</span>,<span class="fl">.5</span>,<span class="fl">4</span>))</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/heatmap-1.png" alt="Figure 18. Heatmap of aligned features sorted by signal of TAF" width="384"><p class="caption">
-Figure 18. Heatmap of aligned features sorted by signal of TAF
+<img src="ChIPpeakAnno_files/figure-html/heatmap-1.png" alt="Heatmap of aligned features sorted by signal of TAF" width="384"><p class="caption">
+Heatmap of aligned features sorted by signal of TAF
 </p>
 </div>
 <div class="sourceCode" id="cb90"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/pkg/ChIPpeakAnno/man/featureAlignedDistribution.html">featureAlignedDistribution</a></span>(<span class="no">sig</span>, <span class="no">feature.center</span>,
                            <span class="kw">upstream</span><span class="kw">=</span><span class="fl">2000</span>, <span class="kw">downstream</span><span class="kw">=</span><span class="fl">2000</span>,
                            <span class="kw">type</span><span class="kw">=</span><span class="st">"l"</span>)</pre></body></html></div>
 <div class="figure">
-<img src="ChIPpeakAnno_files/figure-html/distribution-1.png" alt="Figure 19. Distribution of aligned features" width="576"><p class="caption">
-Figure 19. Distribution of aligned features
+<img src="ChIPpeakAnno_files/figure-html/distribution-1.png" alt="Distribution of aligned features" width="576"><p class="caption">
+Distribution of aligned features
 </p>
 </div>
 </div>
