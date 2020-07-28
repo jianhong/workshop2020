@@ -27,11 +27,6 @@ suppressPackageStartupMessages({
   library(motifStack)
 })
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
-i <- 0
-generateFigureCaption <- function(cap){
-    i <<- i+1
-    return(paste0("Figure ", i, ". ", cap))
-}
 ```
 
 ```{r eval=FALSE}
@@ -154,7 +149,7 @@ Here we will compare the difference among differnt annotation sources.
 First we compare the annotations from ensembl GRCh37.p13 between the
 _EnsDb.Hsapiens.v75_ package and ensembl archives.
 
-```{r "annotateEnsDb", fig.cap=generateFigureCaption("Pie chart of common peaks among EnsDb features.")}
+```{r "annotateEnsDb", fig.cap="Pie chart of common peaks among EnsDb features."}
 seqlevelsStyle(annoDataEnsDb)
 seqlevelsStyle(peaks)
 ## keep the seqnames in the same style
@@ -168,7 +163,7 @@ head(annoEnsDb, n=2)
 pie1(table(annoEnsDb$insideFeature))
 ```
 
-```{r "annotateBiomaRt", fig.cap=generateFigureCaption("Pie chart of common peaks among biomart features.")}
+```{r "annotateBiomaRt", fig.cap="Pie chart of common peaks among biomart features."}
 ## keep the seqnames in the same style
 if(!identical(seqlevelsStyle(peaks), seqlevelsStyle(annoDataMart))){
   seqlevelsStyle(peaks) <- seqlevelsStyle(annoDataMart)[1]
@@ -202,7 +197,7 @@ chromosome_name.
 
 Now we annotate the peaks by UCSC hg19 annotations.
 
-```{r annotateTxDb, fig.cap=generateFigureCaption("Pie chart of common peaks among TxDb features.")}
+```{r annotateTxDb, fig.cap="Pie chart of common peaks among TxDb features."}
 ## keep the seqnames in the same style
 if(!identical(seqlevelsStyle(peaks), seqlevelsStyle(annoDataTxDb))){
   seqlevelsStyle(peaks) <- seqlevelsStyle(annoDataTxDb)[1]
@@ -215,7 +210,7 @@ pie1(table(annoTxDb$insideFeature))
 ```
 Now we try to use gencode v32 annotations to annotate the peaks.
 
-```{r annotateGencode, fig.cap=generateFigureCaption("Pie chart of common peaks among Gencode features.")}
+```{r annotateGencode, fig.cap="Pie chart of common peaks among Gencode features."}
 ## keep the seqnames in the same style
 if(!identical(seqlevelsStyle(peaks), seqlevelsStyle(annoDataGencode))){
   seqlevelsStyle(peaks) <- seqlevelsStyle(annoDataGencode)[1]
@@ -231,7 +226,7 @@ pie1(table(annoGencode$insideFeature))
 We can see the difference between the annotations among Ensembl, 
 UCSC and Gencode in annotation. Let's check the overlaps of annotations.
 
-```{r "Ensembl.vs.UCSC", fig.cap=generateFigureCaption("The overlap and intersection among UCSC, Ensembl, and Gencode annotations.")}
+```{r "Ensembl.vs.UCSC", fig.cap="The overlap and intersection among UCSC, Ensembl, and Gencode annotations."}
 Ensembl <- unique(annoDataEnsDb)
 UCSC <- unique(annoDataTxDb)
 Gencode <- unique(annoDataGencode)
@@ -255,7 +250,7 @@ makeVennDiagram(ol, connectedPeaks = "keepAll")
 
 
 ## Step 4: add additional annotation with the `addGeneIDs` function
-```{r "addIDs", fig.cap=generateFigureCaption("upset plot of common gene symbols among annotations by Ensembl, UCSC and Gencode features.")}
+```{r "addIDs", fig.cap="upset plot of common gene symbols among annotations by Ensembl, UCSC and Gencode features."}
 library(org.Hs.eg.db)
 annoEnsDb <- addGeneIDs(annoEnsDb, orgAnn="org.Hs.eg.db", 
                         feature_id_type="ensembl_gene_id",
@@ -298,7 +293,7 @@ GFF file to GRanges, add metadata from orignal peaks to the overlap GRanges
 using function `addMetadata`, and visualize the overlapping using function
 `makeVennDiagram`.
 
-```{r "findOverlapsOfPeaks", fig.cap=generateFigureCaption("Venn diagram of overlaps for replicated experiments"), fig.width=6, fig.height=6}
+```{r "findOverlapsOfPeaks", fig.cap="Venn diagram of overlaps for replicated experiments", fig.width=6, fig.height=6}
 library(ChIPpeakAnno)
 bed <- system.file("extdata", "MACS_output.bed", package="ChIPpeakAnno")
 gr1 <- toGRanges(bed, format="BED", header=FALSE) 
@@ -320,7 +315,7 @@ But if we check the sum of the overlaps, the total number for each sample are
 not identical to inputed peak number. This can be fixed by set 'connectedPeaks'
 parameter into 'keepAll'.
 
-```{r "vennDiagramKeepAll", fig.cap=generateFigureCaption("Venn diagram of overlaps with all original counts."), fig.width=6, fig.height=6}
+```{r "vennDiagramKeepAll", fig.cap="Venn diagram of overlaps with all original counts.", fig.width=6, fig.height=6}
 length(gr1)
 length(gr2)
 62+166
@@ -350,7 +345,7 @@ peaks span multiple type of features.
 The sample code here plots the distribution of peaks are enriched around the 
 promoters.
 
-```{r "assignChromosomeRegion",fig.cap=generateFigureCaption("Peak distribution over different genomic features."),fig.width=10,fig.height=4}
+```{r "assignChromosomeRegion",fig.cap="Peak distribution over different genomic features.",fig.width=10,fig.height=4}
 overlaps <- ol$peaklist[["gr1///gr2"]] ## get the overlapping peaks
 ## load TxDb to assign genomic elements
 library(TxDb.Hsapiens.UCSC.hg19.knownGene) 
@@ -367,7 +362,7 @@ feature such as the transcription start sites (TSS) can be plotted by the
 `binOverFeature` function. 
 The sample code here plots the distribution of peaks around the TSS.
 
-```{r "binOverFeature",fig.cap=generateFigureCaption("Distribution of peaks around transcript start sites."),fig.width=8,fig.height=6}
+```{r "binOverFeature",fig.cap="Distribution of peaks around transcript start sites.",fig.width=8,fig.height=6}
 binOverFeature(overlaps, annotationData=annoDataTxDb,
                radius=5000, nbins=20, FUN=length, errFun=0,
                ylab="count", 
@@ -411,7 +406,7 @@ WriteXLS(as.data.frame(unname(overlaps.anno)), "anno.xls")
 The distribution of the common peaks around features can be visualized using 
 a pie chart.
 
-```{r "pieChartBiPromoter",fig.cap=generateFigureCaption("Pie chart of the distribution of common peaks around features.")}
+```{r "pieChartBiPromoter",fig.cap="Pie chart of the distribution of common peaks around features."}
 pie1(table(overlaps.anno$insideFeature))
 ```
 
@@ -451,7 +446,7 @@ length by Markove chain by the `oligoSummary` function.
 
 Here is an example to get the Z-scores for short oligos.
 
-```{r "consensus",fig.cap=generateFigureCaption("Histogram of Z-score of 6-mer"),fig.height=6,fig.width=6}
+```{r "consensus",fig.cap="Histogram of Z-score of 6-mer",fig.height=6,fig.width=6}
 library(seqinr)
 library(BSgenome.Hsapiens.UCSC.hg19)
 seq <- getAllPeakSequence(overlaps, 
@@ -468,7 +463,7 @@ h <- hist(zscore, breaks=100, main="Histogram of Z-score")
 text(zscore[length(zscore)], max(h$counts)/10, 
      labels=names(zscore[length(zscore)]), srt=90)
 ```
-```{r "simulation.motif", fig.cap=generateFigureCaption("Motif of simulation data"), fig.width=6, fig.height=6}
+```{r "simulation.motif", fig.cap="Motif of simulation data", fig.width=6, fig.height=6}
 ## generate the motifs
 library(motifStack)
 pfms <- mapply(function(.ele, id)
@@ -525,7 +520,7 @@ plus promoter region. Because the sample data is only a subset of chromosome 2,
 we estimate that the total binding sites is 1/24 of possible binding region 
 in the genome.
 
-```{r "vennDiagram", fig.cap=generateFigureCaption("Venn diagram of overlaps."), fig.width=6, fig.height=6}
+```{r "vennDiagram", fig.cap="Venn diagram of overlaps.", fig.width=6, fig.height=6}
 ol <- findOverlapsOfPeaks(data, connectedPeaks="keepAll")
 averagePeakWidth <- mean(width(unlist(GRangesList(ol$peaklist))))
 tot <- ceiling(3.3e+9 * .03 / averagePeakWidth / 24)
@@ -534,7 +529,7 @@ makeVennDiagram(ol, totalTest=tot, connectedPeaks="keepAll",
                 col=c("#D55E00", "#0072B2", "#E69F00"), #circle border color
                 cat.col=c("#D55E00", "#0072B2", "#E69F00"))
 ```
-```{r "vennDiagramForFirstConsistent", fig.cap=generateFigureCaption("Venn diagram of overlaps for first TF."), fig.width=6, fig.height=6}
+```{r "vennDiagramForFirstConsistent", fig.cap="Venn diagram of overlaps for first TF.", fig.width=6, fig.height=6}
 ## see the difference if we set connectedPeaks to "keepFirstListConsistent"
 ## set connectedPeaks to keepFirstListConsistent will show consistent total 
 ## number of peaks for the first peak list.
@@ -579,7 +574,7 @@ genome assembly using liftover utility.
 Following are the sample codes to do the permutation test using the `permTest` 
 function:
 
-```{r "peakPermTest1", fig.cap=generateFigureCaption("permutation test for YY1 and TEAD4")}
+```{r "peakPermTest1", fig.cap="permutation test for YY1 and TEAD4"}
     data(HOT.spots)
     data(wgEncodeTfbsV3)
     hotGR <- reduce(unlist(HOT.spots))
@@ -599,7 +594,7 @@ function:
     pt1 <- peakPermTest(YY1, TEAD4, pool=pool, seed=1, force.parallel=FALSE)
     plot(pt1)
 ```
-```{r peakPermTest2, fig.cap=generateFigureCaption("permutation test for YY1 and TAF")}
+```{r peakPermTest2, fig.cap="permutation test for YY1 and TAF"}
     pt2 <- peakPermTest(YY1, TAF, pool=pool, seed=1, force.parallel=FALSE)
     plot(pt2)
 ```
@@ -611,7 +606,7 @@ You can easily visualize and compare the binding patterns of raw signals of
 multiple ChIP-Seq experiments using function 
 `featureAlignedHeatmap` and `featureAlignedDistribution`.
 
-```{r "heatmap",fig.cap=generateFigureCaption("Heatmap of aligned features sorted by signal of TAF"),fig.width=4,fig.height=6}
+```{r "heatmap",fig.cap="Heatmap of aligned features sorted by signal of TAF",fig.width=4,fig.height=6}
 features <- ol$peaklist[[length(ol$peaklist)]]
 feature.recentered <- reCenterPeaks(features, width=4000)
 ## here we also suggest importData function in bioconductor trackViewer package 
@@ -641,7 +636,7 @@ heatmap <- featureAlignedHeatmap(sig, feature.center,
                                  upper.extreme=c(3,.5,4))
 ```
 
-```{r "distribution",fig.cap=generateFigureCaption("Distribution of aligned features"),fig.width=6,fig.height=6}
+```{r "distribution",fig.cap="Distribution of aligned features",fig.width=6,fig.height=6}
 featureAlignedDistribution(sig, feature.center, 
                            upstream=2000, downstream=2000,
                            type="l")
